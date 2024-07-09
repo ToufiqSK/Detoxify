@@ -3,7 +3,7 @@
     "name": "Detoxify for YouTube",
     "version": "1.0",
     "description": "Blurs thumbnails and strikes titles of videos users prefer not to watch on YouTube.",
-    "permissions": ["storage", "activeTab", "scripting",""],
+    "permissions": ["storage", "activeTab", "scripting"],
     "background": {
       "service_worker": "background.js"
     },
