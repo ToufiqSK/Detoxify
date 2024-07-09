@@ -1,0 +1,8 @@
+.blurred-thumbnail {
+    filter: blur(5px);
+  }
+  
+  .strikethrough-title {
+    text-decoration: line-through;
+  }
+  
