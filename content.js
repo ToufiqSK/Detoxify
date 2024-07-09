@@ -1,7 +1,5 @@
 function applyFilters() {
   chrome.storage.sync.get(["blockedKeywords", "detoxifyEnabled"], ({ blockedKeywords, detoxifyEnabled }) => {
-    if (!detoxifyEnabled) return;
-
     const thumbnails = document.querySelectorAll("ytd-thumbnail");
     thumbnails.forEach(thumbnail => {
       const renderer = thumbnail.closest("ytd-rich-item-renderer");
@@ -11,11 +9,19 @@ function applyFilters() {
       if (!titleElement) return;
 
       const title = titleElement.innerText.toLowerCase();
-      const shouldBlur = blockedKeywords.some(keyword => title.includes(keyword.toLowerCase()));
+      const shouldBlur = detoxifyEnabled && blockedKeywords.some(keyword => title.includes(keyword.toLowerCase()));
 
-      thumbnail.style.filter = shouldBlur ? "blur(5px)" : "";
-      titleElement.style.textDecoration = shouldBlur ? "line-through" : "";
-      titleElement.setAttribute("title", shouldBlur ? "This video is marked as not preferred by Detoxify extension" : "");
+      if (shouldBlur) {
+        renderer.style.display = "none"; // Hide the video
+       /* thumbnail.style.filter = "blur(5px)";
+        titleElement.style.textDecoration = "line-through";*/
+        titleElement.setAttribute("title", "This video is marked as not preferred by Detoxify extension");
+      } else {
+        renderer.style.display = ""; // Show the video if not blocked
+        thumbnail.style.filter = "";
+        titleElement.style.textDecoration = "";
+        titleElement.removeAttribute("title");
+      }
     });
   });
 }
@@ -35,3 +41,5 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     applyFilters();
   }
 });
+
+applyFilters(); // Initial application of filters when the script loads
